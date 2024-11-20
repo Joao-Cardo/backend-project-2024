@@ -1,0 +1,22 @@
+@url = http://localhost:3000/movies/
+
+#### Get movie with id = 1
+GET {{url}}1
+Content-Type: application/json
+
+
+#### Get all movies int the database
+GET {{url}}
+Content-Type: application/json
+
+
+#### Add a new movie to the database
+POST {{url}}
+Content-Type: application/json
+
+{
+    "id": 4,
+    "title": "Oppenheimer",
+    "director": "Christopher Nolan",
+    "year": 2023
+}
