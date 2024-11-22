@@ -1,0 +1,71 @@
+@url = http://localhost:3000/movies
+
+#### Get movie with id = 1
+GET {{url}}/1
+Content-Type: application/json
+
+
+#### Get all movies int the database
+GET {{url}}
+Content-Type: application/json
+
+
+#### Add a new movie to the database
+POST {{url}}
+Content-Type: application/json
+
+{
+    "id": 5,
+    "title": "Shrek",
+    "director": "Andrew Adamson, Vicky Jenson",
+    "year": 2001
+}
+
+### Get all movies from 2010
+GET {{url}}?year=2010
+Content-Type: application/json
+
+### Add a new movie with invalid data (missing title)
+POST {{url}}
+Content-Type: application/json
+
+{
+    "id": 5,
+    "year": 1996,
+    "director": "Brian De Palma",
+}
+
+### Add a new movie with invalid data (invalid year)
+POST {{url}}
+Content-Type: application/json
+
+{
+    "id": 5,
+    "title": "Mission Impossible",
+    "year": 1887,
+    "director": "Brian De Palma",
+}
+
+### Update a movie with invalid data (invalid year)
+PUT {{url}}/1
+Content-Type: application/json
+
+{
+    "id": 1,
+    "year": 1886,
+}
+
+### Update a movie with valid data
+PUT {{url}}/1
+Content-Type: application/json
+
+{
+    "id": 1,
+    "title": "Tom and Jerry: Blast Off to Mars",
+    "director": "Bill Kopp",
+    "year": 2005
+}
+
+#### Delete a movie
+DELETE {{url}}/2
+Content-Type: application/json
