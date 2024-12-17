@@ -157,7 +157,7 @@ app.use((req, res) => {
   res.status(404).send("The requested route doesn't exist.");
 });
 
-// Start the server in port 3005
+// Start the server in the given PORT
 app.listen(PORT, () => {
   console.log(`Movie management SERVER start in port ${PORT}`);
 });
