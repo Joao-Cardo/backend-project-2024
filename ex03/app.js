@@ -1,7 +1,10 @@
-const express = require("express");
-const morgan = require("morgan");
+import express, { json } from "express";
+import morgan from "morgan";
+import { MongoClient, ServerApiVersion } from "mongodb";
 const app = express();
-const PORT = 3005;
+const PORT = 3000;
+const uri =
+  "mongodb+srv://jfcardo2000:wMe85XHMQKdhqfgQ@backendcluster.kcc9q.mongodb.net/?retryWrites=true&w=majority&appName=BackendCluster";
 
 const movies = [
   { id: 1, title: "Inception", director: "Christopher Nolan", year: 2010 },
@@ -12,11 +15,36 @@ const movies = [
 
 app.use(morgan("dev"));
 // JSON coding by default
-app.use(express.json());
+app.use(json());
+
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  },
+});
+
+async function run() {
+  try {
+    // Connect the client to the server	(optional starting in v4.7)
+    await client.connect();
+    // Send a ping to confirm a successful connection
+    await client.db("admin").command({ ping: 1 });
+    console.log(
+      "Pinged your deployment. You successfully connected to MongoDB!",
+    );
+  } finally {
+    // Ensures that the client will close when you finish/error
+    await client.close();
+  }
+}
+run().catch(console.dir);
 
 // The basic entry point (initial route)
 app.get("/", (req, res) => {
-  let html = "<b>Movie Management App</b><ul>";
+  let html = "Movie Management App <ul>";
   // Show all movies on the HTML page
   movies.forEach((movie) => {
     html += `<li>Title:${movie.title}, Director: ${movie.director}, Year: ${movie.year} </li>`;
@@ -50,7 +78,7 @@ app.get("/movies", (req, res) => {
     if (!isNaN(yearInt)) {
       //valid year
       filteredMovies = filteredMovies.filter((movie) => movie.year === yearInt);
-    }
+    } else res.status(404).send(" Invalid filter for year. ");
   }
 
   res.status(200).json(filteredMovies);
@@ -71,7 +99,7 @@ app.get("/movies/:id", (req, res) => {
     res.json(movie); // HTTP status defaults to OK(200)
   } else {
     // send error code
-    res.status(404).status("<b>No movies with given ID found.</b>");
+    res.status(404).send(" No movies with given ID found. ");
   }
 });
 
@@ -86,12 +114,12 @@ app.post("/movies", (req, res) => {
     // Incomplete movie => error code 400: Bad Request
     return res
       .status(400)
-      .send("<b>Invalid movie object in POST: All fields are mandatory.</b>");
+      .send(" Invalid movie object in POST: All fields are mandatory. ");
   }
 
-  if (!id) {
+  /*if (!id) {
     id = movies.length + 1;
-  }
+  }*/
 
   const intYear = parseInt(year);
 
@@ -99,7 +127,7 @@ app.post("/movies", (req, res) => {
   if (intYear < 1888 || isNaN(intYear)) {
     return res
       .status(400)
-      .send("<b>Invalid data in POST: Movies before 1888 can't be added.</b>");
+      .send(" Invalid data in POST: Movies before 1888 can't be added. ");
   }
 
   // Create a new movie with data provided
@@ -108,7 +136,7 @@ app.post("/movies", (req, res) => {
 
   // return the status to the client
   /// 201 = Created, the created object is typically returned to the client as body
-  resizeTo.status(201).json(newMovie);
+  res.status(201).json(newMovie);
 });
 
 // DELETE /movies/:id: Delete a movie by ID
@@ -119,10 +147,10 @@ app.delete("/movies/:id", (req, res) => {
   if (index !== -1) {
     movies.splice(index, 1); // splice method to remove (update the existing array)
     //Movie successfully deleted -> 204 No Content
-    res.status(204).send("<b>Movie deleted</b>");
+    res.status(204).send(" Movie deleted ");
   } else {
     // No movie found -> 404 (Not Found )
-    res.status(404).send("<b>No movie found.</b>");
+    res.status(404).send(" No movie found. ");
   }
 });
 
@@ -139,9 +167,7 @@ app.put("/movies/:id", (req, res) => {
     if (intYear < 1888 || isNaN(intYear)) {
       return res
         .status(400)
-        .send(
-          "<b>Invalid data in POST: Movies before 1888 can't be added.</b>",
-        );
+        .send(" Invalid data in POST: Movies before 1888 can't be added. ");
     }
     // If the data field isn't in the PUT request (i.e. undefined), keep the original values
     movie.title = title || movie.title;
