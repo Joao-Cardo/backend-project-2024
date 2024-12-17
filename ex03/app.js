@@ -1,7 +1,7 @@
-import express, { json } from "express";
-import morgan from "morgan";
+const express = require("express");
+const morgan = require("morgan");
 const app = express();
-const PORT = 3000;
+const PORT = 3005;
 
 const movies = [
   { id: 1, title: "Inception", director: "Christopher Nolan", year: 2010 },
@@ -12,11 +12,11 @@ const movies = [
 
 app.use(morgan("dev"));
 // JSON coding by default
-app.use(json());
+app.use(express.json());
 
 // The basic entry point (initial route)
 app.get("/", (req, res) => {
-  let html = "Movie Management App <ul>";
+  let html = "<b>Movie Management App</b><ul>";
   // Show all movies on the HTML page
   movies.forEach((movie) => {
     html += `<li>Title:${movie.title}, Director: ${movie.director}, Year: ${movie.year} </li>`;
@@ -50,7 +50,7 @@ app.get("/movies", (req, res) => {
     if (!isNaN(yearInt)) {
       //valid year
       filteredMovies = filteredMovies.filter((movie) => movie.year === yearInt);
-    } else res.status(404).send(" Invalid filter for year. ");
+    }
   }
 
   res.status(200).json(filteredMovies);
@@ -71,7 +71,7 @@ app.get("/movies/:id", (req, res) => {
     res.json(movie); // HTTP status defaults to OK(200)
   } else {
     // send error code
-    res.status(404).send(" No movies with given ID found. ");
+    res.status(404).status("<b>No movies with given ID found.</b>");
   }
 });
 
@@ -86,12 +86,12 @@ app.post("/movies", (req, res) => {
     // Incomplete movie => error code 400: Bad Request
     return res
       .status(400)
-      .send(" Invalid movie object in POST: All fields are mandatory. ");
+      .send("<b>Invalid movie object in POST: All fields are mandatory.</b>");
   }
 
-  /*if (!id) {
+  if (!id) {
     id = movies.length + 1;
-  }*/
+  }
 
   const intYear = parseInt(year);
 
@@ -99,7 +99,7 @@ app.post("/movies", (req, res) => {
   if (intYear < 1888 || isNaN(intYear)) {
     return res
       .status(400)
-      .send(" Invalid data in POST: Movies before 1888 can't be added. ");
+      .send("<b>Invalid data in POST: Movies before 1888 can't be added.</b>");
   }
 
   // Create a new movie with data provided
@@ -108,7 +108,7 @@ app.post("/movies", (req, res) => {
 
   // return the status to the client
   /// 201 = Created, the created object is typically returned to the client as body
-  res.status(201).json(newMovie);
+  resizeTo.status(201).json(newMovie);
 });
 
 // DELETE /movies/:id: Delete a movie by ID
@@ -119,10 +119,10 @@ app.delete("/movies/:id", (req, res) => {
   if (index !== -1) {
     movies.splice(index, 1); // splice method to remove (update the existing array)
     //Movie successfully deleted -> 204 No Content
-    res.status(204).send(" Movie deleted ");
+    res.status(204).send("<b>Movie deleted</b>");
   } else {
     // No movie found -> 404 (Not Found )
-    res.status(404).send(" No movie found. ");
+    res.status(404).send("<b>No movie found.</b>");
   }
 });
 
@@ -139,7 +139,9 @@ app.put("/movies/:id", (req, res) => {
     if (intYear < 1888 || isNaN(intYear)) {
       return res
         .status(400)
-        .send(" Invalid data in POST: Movies before 1888 can't be added. ");
+        .send(
+          "<b>Invalid data in POST: Movies before 1888 can't be added.</b>",
+        );
     }
     // If the data field isn't in the PUT request (i.e. undefined), keep the original values
     movie.title = title || movie.title;

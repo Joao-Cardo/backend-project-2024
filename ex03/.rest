@@ -5,7 +5,7 @@ GET {{url}}/1
 Content-Type: application/json
 
 
-#### Get all movies in the database
+#### Get all movies int the database
 GET {{url}}
 Content-Type: application/json
 
@@ -23,20 +23,6 @@ Content-Type: application/json
 
 ### Get all movies from 2010
 GET {{url}}?year=2010
-Content-Type: application/json
-
-
-### Get movie with title Inception
-GET {{url}}?title=Inception
-Content-Type: application/json
-
-
-### Get all movies from Cristopher Nolan in the year 2023
-GET {{url}}?year=2023&director=Christopher Nolan
-Content-Type: application/json
-
-### Get all movies from Christopher Nolan
-GET {{url}}?director=Christopher Nolan
 Content-Type: application/json
 
 ### Add a new movie with invalid data (missing title)
@@ -80,6 +66,6 @@ Content-Type: application/json
     "year": 2005
 }
 
-#### Delete a movie with ID 2
+#### Delete a movie
 DELETE {{url}}/2
 Content-Type: application/json
