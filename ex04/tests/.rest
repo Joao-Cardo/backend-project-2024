@@ -1,0 +1,107 @@
+@url = http://localhost:3000/movies
+@token = 1;
+
+
+### Login Test - Valid Credentials
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "username": "admin",
+    "password": "admin123"
+}
+
+
+#### Get movie with id = 1
+GET {{url}}/1
+Content-Type: application/json
+
+
+#### Get all movies in the database
+GET {{url}}
+Content-Type: application/json
+
+
+#### Add a new movie to the database
+POST {{url}}
+Content-Type: application/json
+
+{
+    "id": 6,
+    "title": "Shrek",
+    "director": "Andrew Adamson, Vicky Jenson",
+    "year": 2001
+}
+
+### Create a Movie (Token Required)
+POST {{url}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+{
+    "title": "Barbie",
+    "director": "Greta Gerwig",
+    "year": 2023
+}
+
+### Get all movies from 2010
+GET {{url}}?year=2010
+Content-Type: application/json
+
+
+### Get movie with title Inception
+GET {{url}}?title=Inception
+Content-Type: application/json
+
+
+### Get all movies from Cristopher Nolan in the year 2023
+GET {{url}}?year=2023&director=Christopher Nolan
+Content-Type: application/json
+
+### Get all movies from Christopher Nolan
+GET {{url}}?director=Christopher Nolan
+Content-Type: application/json
+
+### Add a new movie with invalid data (missing title)
+POST {{url}}
+Content-Type: application/json
+
+{
+    "id": 5,
+    "year": 1996,
+    "director": "Brian De Palma",
+}
+
+### Add a new movie with invalid data (invalid year)
+POST {{url}}
+Content-Type: application/json
+
+{
+    "id": 5,
+    "title": "Mission Impossible",
+    "year": 1887,
+    "director": "Brian De Palma",
+}
+
+### Update a movie with invalid data (invalid year)
+PUT {{url}}/1
+Content-Type: application/json
+
+{
+    "id": 1,
+    "year": 1886,
+}
+
+### Update a movie with valid data
+PUT {{url}}/1
+Content-Type: application/json
+
+{
+    "id": 1,
+    "title": "Tom and Jerry: Blast Off to Mars",
+    "director": "Bill Kopp",
+    "year": 2005
+}
+
+#### Delete a movie with ID 2
+DELETE {{url}}/2
+Content-Type: application/json
