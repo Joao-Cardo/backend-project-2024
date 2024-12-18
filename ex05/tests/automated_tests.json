@@ -1,0 +1,176 @@
+[
+  {
+    "name": "GET /movies - Get all movies",
+    "request": {
+      "method": "GET",
+      "url": "http://localhost:3000/movies",
+      "status": 200,
+      "expectedResponse": "Array of all movies"
+    }
+  },
+  {
+    "name": "GET /movies/:id - Fetch movie by valid ID",
+    "request": {
+      "method": "GET",
+      "url": "http://localhost:3000/movies/1",
+      "status": 200,
+      "expectedResponse": {
+        "id": 1,
+        "title": "Inception",
+        "director": "Christopher Nolan",
+        "year": 2010
+      }
+    }
+  },
+  {
+    "name": "GET /movies/:id - Fetch movie by invalid ID",
+    "request": {
+      "method": "GET",
+      "url": "http://localhost:3000/movies/999",
+      "status": 404,
+      "expectedResponse": "No movies with given ID found."
+    }
+  },
+  {
+    "name": "POST /movies - Add a new movie with valid data",
+    "request": {
+      "method": "POST",
+      "url": "http://localhost:3000/movies",
+      "body": {
+        "title": "Shrek",
+        "director": "Andrew Adamson, Vicky Jenson",
+        "year": 2001
+      },
+      "status": 201,
+      "expectedResponse": {
+        "id": 5,
+        "title": "Shrek",
+        "director": "Andrew Adamson, Vicky Jenson",
+        "year": 2001
+      }
+    }
+  },
+  {
+    "name": "POST /movies - Add a new movie with missing fields",
+    "request": {
+      "method": "POST",
+      "url": "http://localhost:3000/movies",
+      "body": {
+        "title": "Tenet"
+      },
+      "status": 400,
+      "expectedResponse": "Invalid movie object in POST: All fields are mandatory."
+    }
+  },
+  {
+    "name": "POST /movies - Add a movie with invalid year",
+    "request": {
+      "method": "POST",
+      "url": "http://localhost:3000/movies",
+      "body": {
+        "title": "Old Movie",
+        "director": "Unknown",
+        "year": 1800
+      },
+      "status": 400,
+      "expectedResponse": "Invalid data in POST: Movies before 1888 can't be added."
+    }
+  },
+  {
+    "name": "PUT /movies/:id - Update an existing movie",
+    "request": {
+      "method": "PUT",
+      "url": "http://localhost:3000/movies/1",
+      "body": {
+        "title": "Inception Updated",
+        "year": 2011
+      },
+      "status": 200,
+      "expectedResponse": {
+        "id": 1,
+        "title": "Inception Updated",
+        "director": "Christopher Nolan",
+        "year": 2011
+      }
+    }
+  },
+  {
+    "name": "PUT /movies/:id - Update a non-existent movie",
+    "request": {
+      "method": "PUT",
+      "url": "http://localhost:3000/movies/999",
+      "body": {
+        "id": 12,
+        "title": "Nonexistent Movie",
+        "year": 2022
+      },
+      "status": 404,
+      "expectedResponse": "No movie with that id to update"
+    }
+  },
+  {
+    "name": "DELETE /movies/:id - Delete an existing movie",
+    "request": {
+      "method": "DELETE",
+      "url": "http://localhost:3000/movies/1",
+      "status": 204,
+      "expectedResponse": "Movie deleted"
+    }
+  },
+  {
+    "name": "DELETE /movies/:id - Delete a non-existent movie",
+    "request": {
+      "method": "DELETE",
+      "url": "http://localhost:3000/movies/999",
+      "status": 404,
+      "expectedResponse": "No movie found."
+    }
+  },
+  {
+    "name": "GET /movies - Fetch movies with filters (title)",
+    "request": {
+      "method": "GET",
+      "url": "http://localhost:3000/movies?title=Matrix",
+      "status": 200,
+      "expectedResponse": [
+        {
+          "id": 2,
+          "title": "The Matrix",
+          "director": "The Wachowskis",
+          "year": 1999
+        }
+      ]
+    }
+  },
+  {
+    "name": "GET /movies - Fetch movies with filters (director)",
+    "request": {
+      "method": "GET",
+      "url": "http://localhost:3000/movies?director=Christopher",
+      "status": 200,
+      "expectedResponse": [
+        {
+          "id": 1,
+          "title": "Inception",
+          "director": "Christopher Nolan",
+          "year": 2010
+        },
+        {
+          "id": 4,
+          "title": "Oppenheimer",
+          "director": "Christopher Nolan",
+          "year": 2023
+        }
+      ]
+    }
+  },
+  {
+    "name": "GET /movies - Fetch movies with invalid filters",
+    "request": {
+      "method": "GET",
+      "url": "http://localhost:3000/movies?year=abcd",
+      "status": 200,
+      "expectedResponse": []
+    }
+  }
+]
