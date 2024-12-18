@@ -1,9 +1,10 @@
-require("dotenv").config(); // loading required environmental libraries
+import dotenv from "dotenv";
 import express, { json, query } from "express";
 import morgan from "morgan";
 import mongoose, { mongo } from "mongoose";
 const app = express();
 const PORT = 3000;
+dotenv.config();
 
 console.log("Environment variable MONGODB_URI: ", process.env.MONGODB_URI);
 
@@ -14,9 +15,10 @@ mongoose
 
 // Define schema and model for Movies (students must have title, director and year)
 const movieSchema = new mongoose.Schema({
+  id: { type: Number, required: false },
   title: { type: String, required: true },
   director: { type: String, required: true },
-  year: { type: Int32, required: true }, // how to constrain the year to after 1888?
+  year: { type: Number, required: true }, // how to constrain the year to after 1888?
 });
 
 // Model for movie
@@ -56,7 +58,8 @@ app.get("/movies", async (req, res) => {
 });
 
 // GET all movies
-app.get("/movies", (req, res) => {
+app.get("/movies", async (req, res) => {
+  const movies = await Movie.find();
   res.json(movies);
 });
 
