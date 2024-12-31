@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
 import dotenv from "dotenv";
+import bcrypt from "bcrypt";
 
 dotenv.config();
 
@@ -15,15 +16,15 @@ export const login = async (req, res) => {
       return res.status(400).json({ error: "Invalid username or password." });
     }
 
-    //Validate password
-    if (user.password !== password) {
+    //Validate password (user.password is the hash)
+    if (!(await bcrypt.compare(password, user.password))) {
       return res.status(400).json({ error: "Invalid username or password." });
     }
 
     //Generate JWT
     const token = jwt.sign(
       { id: user._id, role: user.role },
-      process.env.JWT_SECRET, // 'password' to enconde the token
+      process.env.JWT_SECRET, // 'password' to encode the token
       { expiresIn: "1h" }, //token visibility
     );
     res.json({ token });
@@ -40,11 +41,23 @@ export const register = async (req, res) => {
     if (userExists) {
       return res.status(400).json({ error: "Username already exists." });
     } else {
-      const user = new User({ username, password, role });
+      const pw = hashPassword(password);
+      const user = new User({ username, pw, role });
       await user.save();
       res.status(201).json({ message: "User registered successfully." });
     }
   } catch (err) {
     res.status(500).json({ error: "Internal server error." });
+  }
+};
+
+export const hashPassword = async (plainPassword) => {
+  try {
+    const saltRounds = 10; // Recommended value
+    const hashedPassword = await bcrypt.hash(plainPassword, saltRounds);
+    return hashedPassword;
+  } catch (error) {
+    console.error("Error hashing password:", error);
+    throw error;
   }
 };
